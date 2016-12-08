@@ -1,3 +1,12 @@
+'''
+	Original by dzhu
+		https://github.com/dzhu/myo-raw
+
+	Edited by Fernando Cosentino
+		http://www.fernandocosentino.net/pyoconnect
+'''
+
+
 from __future__ import print_function
 
 import enum
@@ -41,9 +50,8 @@ class Pose(enum.Enum):
     WAVE_OUT = 3
     FINGERS_SPREAD = 4
     THUMB_TO_PINKY = 5
-    UNKNOWN = 255
-
-
+    UNKNOWN = 255	 
+    
 class Packet(object):
     def __init__(self, ords):
         self.typ = ords[0]
@@ -288,7 +296,7 @@ class MyoRaw(object):
                 gyro = vals[7:10]
                 self.on_imu(quat, acc, gyro)
             elif attr == 0x23:
-                typ, val, xdir = unpack('3B', pay)
+                typ, val, xdir, _,_,_ = unpack('6B', pay)
 
                 if typ == 1: # on arm
                     self.on_arm(Arm(val), XDirection(xdir))
@@ -321,7 +329,7 @@ class MyoRaw(object):
         '''
 
         self.write_attr(0x28, b'\x01\x00')
-        self.write_attr(0x19, b'\x01\x03\x01\x01\x00')
+        #self.write_attr(0x19, b'\x01\x03\x01\x01\x00')
         self.write_attr(0x19, b'\x01\x03\x01\x01\x01')
 
     def mc_start_collection(self):
